@@ -56,6 +56,7 @@ def update_task(task_id):
             task["title"] = data.get("title", task["title"])
             task["description"] = data.get("description", task["description"])
             task["status"] = data.get("status", task["status"])
+            task["priority"] = data.get("priority", task["priority"])
             return jsonify(task), 200
 
     return jsonify({"error": "not found"}), 404
