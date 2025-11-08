@@ -43,3 +43,17 @@ def create_task():
 @app.get("/tasks")
 def list_tasks():
     return jsonify(tasks), 200
+
+@app.put("/tasks/<int:task_id>")
+def update_task(task_id):
+    data = request.get_json() or {}
+
+    for task in tasks:
+        if task["id"] == task_id:
+            # Atualiza só o que foi enviado
+            task["title"] = data.get("title", task["title"])
+            task["description"] = data.get("description", task["description"])
+            task["status"] = data.get("status", task["status"])
+            return jsonify(task), 200
+
+    return jsonify({"error": "not found"}), 404
