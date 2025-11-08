@@ -1,5 +1,8 @@
+import sys, os
+sys.path.append(os.path.abspath("src"))
+
+from app import app
 import json
-from src.app import app
 
 def test_criar_tarefa():
     client = app.test_client()
