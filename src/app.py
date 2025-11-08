@@ -32,7 +32,9 @@ def create_task():
         "id": next_id,
         "title": title,
         "description": data.get("description", ""),
-        "status": "todo"  # sempre começa como "a fazer"
+        "status": "todo",  # sempre começa como "a fazer"
+        "priority": data.get("priority", "medium")
+
     }
 
     tasks.append(task)
