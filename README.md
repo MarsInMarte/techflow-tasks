@@ -13,8 +13,14 @@
 ## Testes
 - Rodar: `pytest`
 
-## Mudança de escopo (simulação)
-Adicionamos **prioridade da tarefa (baixa/média/alta)**. Ajustamos o Kanban e registramos commits explicando a mudança.
+## Mudança de escopo (feature adicional)
+Originalmente o sistema teria apenas título, descrição e status.
+Para atender a uma necessidade da startup, foi incluída uma nova
+funcionalidade: **campo de prioridade** da tarefa (low, medium ou high).
+
+### Justificativa
+Isso permite que as tarefas mais urgentes sejam identificadas rapidamente,
+melhorando o fluxo de trabalho no ambiente ágil.
 
 ## Links úteis
 - Kanban: GitHub → Projects do repositório
