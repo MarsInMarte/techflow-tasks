@@ -57,3 +57,15 @@ def update_task(task_id):
             return jsonify(task), 200
 
     return jsonify({"error": "not found"}), 404
+
+@app.delete("/tasks/<int:task_id>")
+def delete_task(task_id):
+    global tasks
+    before = len(tasks)
+
+    tasks = [t for t in tasks if t["id"] != task_id]
+
+    if len(tasks) == before:
+        return jsonify({"error": "not found"}), 404
+
+    return "", 204
