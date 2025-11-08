@@ -39,3 +39,7 @@ def create_task():
     next_id += 1
 
     return jsonify(task), 201
+
+@app.get("/tasks")
+def list_tasks():
+    return jsonify(tasks), 200
