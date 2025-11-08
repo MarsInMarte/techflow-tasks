@@ -74,3 +74,16 @@ def test_apagar_tarefa():
     resposta2 = client.delete(f"/tasks/{id_tarefa}")
 
     assert resposta2.status_code == 204
+
+def test_prioridade():
+    client = app.test_client()
+
+    resposta = client.post(
+        "/tasks",
+        data=json.dumps({"title": "Com prioridade", "priority": "high"}),
+        content_type="application/json"
+    )
+
+    assert resposta.status_code == 201
+    dados = resposta.get_json()
+    assert dados["priority"] == "high"
