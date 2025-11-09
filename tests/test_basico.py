@@ -29,7 +29,6 @@ def test_listar_tarefas():
         content_type="application/json"
     )
 
-    # agora lista
     resposta = client.get("/tarefas")
     assert resposta.status_code == 200
 
@@ -42,7 +41,6 @@ def test_listar_tarefas():
 def test_atualizar_tarefa():
     client = app.test_client()
 
-    # cria uma tarefa
     resposta = client.post(
         "/tarefas",
         data=json.dumps({"titulo": "Antigo"}),
@@ -51,7 +49,6 @@ def test_atualizar_tarefa():
     tarefa = resposta.get_json()
     id_tarefa = tarefa["id"]
 
-    # atualiza a tarefa
     resposta2 = client.put(
         f"/tarefas/{id_tarefa}",
         data=json.dumps({"titulo": "Novo título"}),
@@ -66,7 +63,6 @@ def test_atualizar_tarefa():
 def test_apagar_tarefa():
     client = app.test_client()
 
-    # cria uma tarefa
     resposta = client.post(
         "/tarefas",
         data=json.dumps({"titulo": "Apagar"}),
@@ -75,6 +71,20 @@ def test_apagar_tarefa():
     tarefa = resposta.get_json()
     id_tarefa = tarefa["id"]
 
-    # apaga a tarefa
-    resposta2 = client.delete(f"/tarefas
+    resposta2 = client.delete(f"/tarefas/{id_tarefa}")
 
+    assert resposta2.status_code == 204
+
+
+def test_prioridade():
+    client = app.test_client()
+
+    resposta = client.post(
+        "/tarefas",
+        data=json.dumps({"titulo": "Com prioridade", "prioridade": "alta"}),
+        content_type="application/json"
+    )
+
+    assert resposta.status_code == 201
+    dados = resposta.get_json()
+    assert dados["prioridade"] == "alta"
