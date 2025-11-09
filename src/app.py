@@ -2,67 +2,63 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Lista onde vamos guardar as tarefas
-tasks = []
-next_id = 1
+# Lista de tarefas
+tarefas = []
+proximo_id = 1
 
 @app.get("/")
 def home():
-    return "Olá! O sistema está funcionando!"
+    return "API de Tarefas funcionando!"
 
-@app.post("/tasks")
-def create_task():
-    global next_id
-    data = request.get_json() or {}
+@app.post("/tarefas")
+def criar_tarefa():
+    global proximo_id
+    dados = request.get_json() or {}
 
-    # Pega o título enviado
-    title = data.get("title", "").strip()
+    titulo = dados.get("titulo", "").strip()
 
-    # Se não tiver título, erro
-    if not title:
-        return jsonify({"error": "title is required"}), 400
+    if not titulo:
+        return jsonify({"erro": "O campo 'titulo' é obrigatório."}), 400
 
-    # Cria a tarefa
-    task = {
-        "id": next_id,
-        "title": title,
-        "description": data.get("description", ""),
-        "status": "todo",
-        "priority": data.get("priority", "medium")
+    tarefa = {
+        "id": proximo_id,
+        "titulo": titulo,
+        "descricao": dados.get("descricao", ""),
+        "status": "pendente",  # em vez de "todo"
+        "prioridade": dados.get("prioridade", "media")  # baixa / media / alta
     }
 
-    tasks.append(task)
-    next_id += 1
+    tarefas.append(tarefa)
+    proximo_id += 1
+    return jsonify(tarefa), 201
 
-    return jsonify(task), 201
+@app.get("/tarefas")
+def listar_tarefas():
+    return jsonify(tarefas), 200
 
-@app.get("/tasks")
-def list_tasks():
-    return jsonify(tasks), 200
+@app.put("/tarefas/<int:tarefa_id>")
+def atualizar_tarefa(tarefa_id):
+    dados = request.get_json() or {}
 
-@app.put("/tasks/<int:task_id>")
-def update_task(task_id):
-    data = request.get_json() or {}
+    for tarefa in tarefas:
+        if tarefa["id"] == tarefa_id:
+            tarefa["titulo"] = dados.get("titulo", tarefa["titulo"])
+            tarefa["descricao"] = dados.get("descricao", tarefa["descricao"])
+            tarefa["status"] = dados.get("status", tarefa["status"])
+            tarefa["prioridade"] = dados.get("prioridade", tarefa["prioridade"])
+            return jsonify(tarefa), 200
 
-    for task in tasks:
-        if task["id"] == task_id:
-            task["title"] = data.get("title", task["title"])
-            task["description"] = data.get("description", task["description"])
-            task["status"] = data.get("status", task["status"])
-            task["priority"] = data.get("priority", task["priority"])
-            return jsonify(task), 200
+    return jsonify({"erro": "Tarefa não encontrada."}), 404
 
-    return jsonify({"error": "not found"}), 404
+@app.delete("/tarefas/<int:tarefa_id>")
+def deletar_tarefa(tarefa_id):
+    global tarefas
+    antes = len(tarefas)
 
-@app.delete("/tasks/<int:task_id>")
-def delete_task(task_id):
-    global tasks
-    before = len(tasks)
+    tarefas = [t for t in tarefas if t["id"] != tarefa_id]
 
-    tasks = [t for t in tasks if t["id"] != task_id]
-
-    if len(tasks) == before:
-        return jsonify({"error": "not found"}), 404
+    if len(tarefas) == antes:
+        return jsonify({"erro": "Tarefa não encontrada."}), 404
 
     return "", 204
 
